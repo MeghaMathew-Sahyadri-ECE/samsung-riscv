@@ -95,6 +95,8 @@ Binary: 000001100001000100110000100011
 
 Hexadecimal: 0x01801323
 
+---
+
 **Instruction 4: jal ra, 10438**
 
 ![Screenshot 2025-01-16 184953](https://github.com/user-attachments/assets/78558d34-6ddc-42cf-9de2-e81884d96629)
@@ -125,19 +127,221 @@ imm[20|10:1|11|19:12] | rd      | opcode -------> 0|0100010011|0|00101000| 00001
 - **Hexadecimal**: `0x370001e7`
 
 ---
+### Instruction 5: `ret`  
 
-### Screenshots and Outputs  
+![Screenshot 2025-01-17 135951](https://github.com/user-attachments/assets/0be2f752-044f-4a0f-a480-f889f182a3fb)
 
-**Instruction 1**:  
-![Instruction 1](https://github.com/user-attachments/assets/88e483b3-8f7f-4345-b1d9-3de21147da54)  
+**Operation**: Return to the calling function. This is equivalent to `jalr x0, ra, 0` in RISC-V assembly.  
+- **Opcode**: `1100111` (for `jalr`)  
+- **Source Register (rs1)**: `ra` → `x1` (binary: `00001`)  
+- **Destination Register (rd)**: `x0` → `x0` (binary: `00000`)  
+- **Immediate**: `0`  
 
-**Instruction 2**:  
-![Instruction 2](https://github.com/user-attachments/assets/129cff5e-fb51-4c4a-b84d-9873402b46e3)  
+**Encoding into Machine Code:**
 
-**Instruction 3**:  
-![Instruction 3](https://github.com/user-attachments/assets/a965e099-9b5b-488a-bcae-841197513dfd)  
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000000     | 00001  | 000    | 00000  | 1100111
 
-**Instruction 4**:  
-![Instruction 4](https://github.com/user-attachments/assets/78558d34-6ddc-42cf-9de2-e81884d96629)
+- **Binary**: `00000000000000010000000001110011`  
+- **Hexadecimal**: `0x00000067`
+
+---
+### Instruction 6: `bnez a5, offset`  
+
+![Screenshot 2025-01-17 130933](https://github.com/user-attachments/assets/56cd7a16-2dd8-4367-aeb7-e27033de646f)
+
+**Operation**: Branch to the specified offset if the value in register `a5` is not zero.  
+- **Opcode**: `1100011` (for `branch` instructions)  
+- **Source Register (rs1)**: `a5` → `x15` (binary: `01111`)  
+- **Function (funct3)**: `001` (for `bnez`, branch if not zero)  
+- **Immediate (offset)**: Branch target address relative to PC.
+
+**Encoding into Machine Code:**
+
+imm[12|10:5] | rs2   | rs1    | funct3 | imm[4:1|11] | opcode -----> 000000000000   | 01111  | 01111 | 001    | 00000   | 1100011
+
+- **Binary**: `000000000000011110001000000011`  
+- **Hexadecimal**: `0x000f0043`
+
+---
+
+### Instruction 7: `andi a5, a5, 1`  
+
+![Screenshot 2025-01-17 130917](https://github.com/user-attachments/assets/339ebf12-6cd5-4951-b800-06262c2af782)
+
+**Operation**: Performs a bitwise AND operation between the contents of register `a5` and the immediate value `1`, and stores the result back in `a5`.  
+- **Opcode**: `0010011` (for immediate arithmetic operations like `andi`)  
+- **Function (funct3)**: `111` (for `andi`)  
+- **Source Register (rs1)**: `a5` → `x15` (binary: `01111`)  
+- **Destination Register (rd)**: `a5` → `x15` (binary: `01111`)  
+- **Immediate**: `1`  
+
+**Encoding into Machine Code:**
+
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000001   | 01111  | 111    | 01111  | 0010011
+
+- **Binary**: `00000000000101111000111110010011`  
+- **Hexadecimal**: `0x001f7b13`
+
+---
+---
+
+### Instruction 8: `lw a5, 12(sp)`  
+
+![Screenshot 2025-01-17 130856](https://github.com/user-attachments/assets/0fe14acc-845a-4fb3-ac0f-3ff4783099b4)
+
+**Operation**: Load a word from memory at offset `12` from the stack pointer (`sp`) into register `a5`.  
+- **Opcode**: `0000011` (for load instructions)  
+- **Function (funct3)**: `010` (for `lw`, load word)  
+- **Source Register (rs1)**: `sp` → `x2` (binary: `00010`)  
+- **Destination Register (rd)**: `a5` → `x15` (binary: `01111`)  
+- **Immediate (imm[11:0])**: `12` → `00000000001100` (binary)
+
+**Encoding into Machine Code:**
+
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000011     | 00010  | 010    | 01111  | 0000011
+
+- **Binary**: `00000000001100010000101110000011`  
+- **Hexadecimal**: `0x0002c783`
+
+---
+
+### Instruction 9: `li a0, 0`  
+
+![Screenshot 2025-01-17 131023](https://github.com/user-attachments/assets/67bb7026-1faf-4a62-b771-b5a024925cdd)
+
+**Operation**: Load the immediate value `0` into register `a0`.  
+- **Opcode**: `0010011` (for immediate arithmetic operations like `li`)  
+- **Function (funct3)**: `000` (for `addi` operation)  
+- **Source Register (rs1)**: `x0` (binary: `00000`)  
+- **Destination Register (rd)**: `a0` → `x10` (binary: `01010`)  
+- **Immediate (imm[11:0])**: `0` → `000000000000` (binary)
+
+**Encoding into Machine Code:**
+
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000000   | 00000  | 000    | 01010  | 0010011
+
+- **Binary**: `00000000000000000000101000010011`  
+- **Hexadecimal**: `0x00000293`
+
+---
+---
+
+### Instruction 10: `j 100ec <main+0x3c>`  
+
+![Screenshot 2025-01-17 131055](https://github.com/user-attachments/assets/023753a6-f6d9-46dd-9d22-b87df64483b5)
+
+**Operation**: Perform an unconditional jump to the target address `100ec`, which is `main+0x3c`.  
+- **Opcode**: `1101111` (for `j` jump instructions)  
+- **Immediate (imm[20|10:1|11|19:12])**:  
+  - Immediate `100ec` in binary: `000001001110110100000000000000` (split into fields)  
+  - imm[20]: `0`  
+  - imm[10:1]: `0011101101`  
+  - imm[11]: `0`  
+  - imm[19:12]: `00000000`  
+
+**Encoding into Machine Code:**
+
+imm[20|10:1|11|19:12] | rd    | opcode -----> 0|0011101101|0|00000000| 00000  | 1101111
+
+- **Binary**: `00000000001110110101000000001111`  
+- **Hexadecimal**: `0xfe5ff06f`
+
+---
+
+### Instruction 11: `ld ra, 24(sp)`  
+
+![Screenshot 2025-01-17 130958](https://github.com/user-attachments/assets/509dbb03-7570-48db-a1cc-24f15b6a4e35)
+
+**Operation**: Load a double-word from memory at offset `24` from the stack pointer (`sp`) into register `ra`.  
+- **Opcode**: `0000011` (for load instructions)  
+- **Function (funct3)**: `011` (for `ld`, load double-word)  
+- **Source Register (rs1)**: `sp` → `x2` (binary: `00010`)  
+- **Destination Register (rd)**: `ra` → `x1` (binary: `00001`)  
+- **Immediate (imm[11:0])**: `24` → `00000000011000` (binary)
+
+**Encoding into Machine Code:**
+
+imm[11:0] | rs1    | funct3 | rd   | opcode -----> 000000000110     | 00010  | 011    | 00001  | 0000011
+
+- **Binary**: `00000000011000010001000110000011`  
+- **Hexadecimal**: `0x01813083`
+
+---
+
+### Instruction 12: `auipc ra, 0x0`  
+
+![Screenshot 2025-01-17 142008](https://github.com/user-attachments/assets/40ccf672-c70c-4142-b7f3-47f179925618)
+
+**Operation**: Adds the program counter (`PC`) value and an immediate value `0x0`, and stores the result in `ra`.  
+- **Opcode**: `0010111` (for `auipc`, add upper immediate to program counter)  
+- **Destination Register (rd)**: `ra` → `x1` (binary: `00001`)  
+- **Immediate (imm[31:12])**: `0x0` → `000000000000` (binary)
+
+**Encoding into Machine Code:**
+
+imm[31:12] | rd    | opcode -----> 000000000000   | 00001  | 0010111
+
+- **Binary**: `00000000000000000000000101110111`  
+- **Hexadecimal**: `0x00000097`
+
+---
+
+### Instruction 13: `jalr zero, 0x0(main-0x100b0)`  
+
+![Screenshot 2025-01-17 142109](https://github.com/user-attachments/assets/d6a1f9eb-2671-4783-a63c-a62a69e5d490)
+
+**Operation**: Perform a jump and link register to the address `main-0x100b0` and write the return address to `zero`.  
+- **Opcode**: `1100111` (for `jalr` jump and link register)  
+- **Function (funct3)**: `000` (for `jalr` with `x0` as destination)  
+- **Source Register (rs1)**: `main` → `x1` (binary: `00001`)  
+- **Immediate (imm[11:0])**: `0x0` → `000000000000` (binary)  
+
+**Encoding into Machine Code:**
+
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000000   | 00001  | 000    | 00000  | 1100111
+
+- **Binary**: `00000000000000001000000000001111`  
+- **Hexadecimal**: `0x000000e7`
+---
+
+---
+
+### Instruction 14: `jr zero # 0 <main-0x100b0>`  
+
+![Screenshot 2025-01-17 142817](https://github.com/user-attachments/assets/7138fff3-cdcf-4d6b-a974-ffc370dd1bb0)
+
+**Operation**: Perform a jump register to the address `main-0x100b0` and write the return address to register `zero`.  
+- **Opcode**: `1100011` (for `jr` jump register)  
+- **Function (funct3)**: `000` (for `jr` with `x0` as destination)  
+- **Source Register (rs1)**: `main` → `x1` (binary: `00001`)  
+- **Immediate (imm[11:0])**: `0x0` → `000000000000` (binary)
+
+**Encoding into Machine Code:**
+
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000000   | 00001  | 000    | 00000  | 1100011
+
+- **Binary**: `00000000000000001000000000000011`  
+- **Hexadecimal**: `0x00000067`
+
+---
+
+### Instruction 15: `mv a1, a0`  
+
+![Screenshot 2025-01-17 142801](https://github.com/user-attachments/assets/b0770975-a71a-4bd0-9552-0bb349004d35)
+
+**Operation**: Move the value in register `a0` to register `a1`.  
+- **Opcode**: `0110011` (for R-type register operations like `mv`)  
+- **Function (funct3)**: `000` (for `mv` operation)  
+- **Source Register (rs1)**: `a0` → `x10` (binary: `01010`)  
+- **Source Register (rs2)**: `a0` → `x10` (binary: `01010`)  
+- **Destination Register (rd)**: `a1` → `x11` (binary: `01011`)  
+- **Function (funct7)**: `0000000` (for `mv` operation)
+
+**Encoding into Machine Code:**
+
+funct7 | rs2    | rs1    | funct3 | rd    | opcode -----> 0000000   | 01010  | 01010  | 000    | 01011  | 0110011
+
+- **Binary**: `00000000010101001010100000000011`  
+- **Hexadecimal**: `0x00050593`
 
 ---
