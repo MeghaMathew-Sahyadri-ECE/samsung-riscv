@@ -1,12 +1,12 @@
-# RISC-V Internship Program  
-**Powered by SAMSUNG and VSD**  
+# RISC-V Internship Program **Powered by SAMSUNG and VSD**
 
-This internship focuses on the RISC-V architecture and uses open-source tools to teach participants about VLSI chip design and RISC-V.  
+This internship focuses on the RISC-V architecture and uses open-source tools to teach participants about VLSI chip design and RISC-V.
+
 Instructor: **Kunal Ghosh Sir**
 
 ---
 
-## Basic Details  
+## Basic Details
 
 **Name**: Megha Akku Mathew  
 **College**: Sahyadri College of Engineering and Management  
@@ -16,68 +16,59 @@ Instructor: **Kunal Ghosh Sir**
 
 ---
 
-## Tasks Overview  
+## Tasks Overview
 
-### Task 1: Compile C Code  
-The task involved referring to C-based and RISC-V-based lab videos and executing the process of compiling C code using GCC and the RISC-V compiler.  
+<details>
+<summary>Task 1: Compile C Code</summary>
 
----
+The task involved referring to C-based and RISC-V-based lab videos and executing the process of compiling C code using GCC and the RISC-V compiler.
 
-### Task 2: SPIKE Simulation  
-- Performing SPIKE simulation.  
-- Debugging the C code in Interactive Debugging Mode using Spike.  
+</details>
 
----
+<details>
+<summary>Task 2: SPIKE Simulation</summary>
 
-### Task 3: Instruction Encoding  
+- Performing SPIKE simulation.
+- Debugging the C code in Interactive Debugging Mode using Spike.
+
+</details>
+
+<details>
+<summary>Task 3: Instruction Encoding</summary>
+
 The goal is to identify the instruction type, decode the given instructions, and represent the exact 32-bit machine code in the desired format.
 
----
 
 ### Instruction 1: `lui a0, 0x2b`  
-
-![Screenshot 2025-01-16 183517](https://github.com/user-attachments/assets/88e483b3-8f7f-4345-b1d9-3de21147da54)
-
+![Screenshot 2025-01-16 183517](https://github.com/user-attachments/assets/88e483b3-8f7f-4345-b1d9-3de21147da54)  
 **Operation**: Load the upper 20 bits of an immediate (`0x2b`) into register `a0`.  
 - **Opcode**: `0110111` (for `lui`)  
 - **Destination Register (rd)**: `a0` → `x10` (binary: `01010`)  
-- **Immediate (imm[31:12])**: `0x2b` → `0000000000101011` (binary)
-
-
-**Encoding into Machine Code:**
-
-imm[31:12]         | rd      | opcode --->0000000000101011  | 01010   | 0110111
-
+- **Immediate (imm[31:12])**: `0x2b` → `0000000000101011` (binary)  
+**Encoding into Machine Code**:  
+imm[31:12]         | rd      | opcode --->0000000000101011  | 01010   | 0110111  
 - **Binary**: `0000000000101011010100110111`  
-- **Hexadecimal**: `0x002b537`
+- **Hexadecimal**: `0x002b537`  
 
 ---
 
 ### Instruction 2: `addi sp, sp, -32`  
-
-![Screenshot 2025-01-16 184848](https://github.com/user-attachments/assets/129cff5e-fb51-4c4a-b84d-9873402b46e3)
-
+![Screenshot 2025-01-16 184848](https://github.com/user-attachments/assets/129cff5e-fb51-4c4a-b84d-9873402b46e3)  
 **Operation**: Add `-32` to the stack pointer (`sp`).  
 - **Opcode**: `0010011` (for immediate arithmetic operations like `addi`)  
 - **Function (funct3)**: `000` (for addition)  
 - **Source Register (rs1)**: `sp` → `x2` (binary: `00010`)  
 - **Destination Register (rd)**: `sp` → `x2` (binary: `00010`)  
-- **Immediate (imm[11:0])**: `-32` → `1111111111100000` (12-bit two’s complement)
-
-
-**Encoding into Machine Code:**
-
-imm[11:0]        | rs1    | funct3 | rd      | opcode -----> 111111111110     | 00010  | 000    | 00010   | 0010011
-
+- **Immediate (imm[11:0])**: `-32` → `1111111111100000` (12-bit two’s complement)  
+**Encoding into Machine Code**:  
+imm[11:0]        | rs1    | funct3 | rd      | opcode -----> 111111111110     | 00010  | 000    | 00010   | 0010011  
 - **Binary**: `11111111111000010000100110011`  
 - **Hexadecimal**: `0xfe010113`
 
 ---
 
 ### Instruction 3: `sd ra, 24(sp)`  
-
-![Screenshot 2025-01-16 184929](https://github.com/user-attachments/assets/a965e099-9b5b-488a-bcae-841197513dfd)
-
+![Screenshot 2025-01-16 184929](https://github.com/user-attachments/assets/a965e099-9b5b-488a-bcae-841197513dfd)  
 **Operation**: Store the value in `ra` into memory at offset `24` from `sp`.  
 - **Opcode**: `0100011` (for store instructions)  
 - **Function (funct3)**: `011` (for `sd`, store double-word)  
@@ -86,103 +77,69 @@ imm[11:0]        | rs1    | funct3 | rd      | opcode -----> 111111111110     | 
 - **Immediate (imm[11:0])**:  
   - **imm[11:5]**: `0000011`  
   - **imm[4:0]**: `11000`  
-
-**Encoding into Machine Code:**
-
-imm[11:5] | rs2   | rs1    | funct3 | imm[4:0] | opcode ------> 0000011   | 00001 | 00010  | 011    | 11000    | 0100011
-
-Binary: 000001100001000100110000100011
-
-Hexadecimal: 0x01801323
+**Encoding into Machine Code**:  
+imm[11:5] | rs2   | rs1    | funct3 | imm[4:0] | opcode ------> 0000011   | 00001 | 00010  | 011    | 11000    | 0100011  
+- **Binary**: `000001100001000100110000100011`  
+- **Hexadecimal**: `0x01801323`
 
 ---
 
-**Instruction 4: jal ra, 10438**
-
-![Screenshot 2025-01-16 184953](https://github.com/user-attachments/assets/78558d34-6ddc-42cf-9de2-e81884d96629)
-
-Operation: Jump to the address 10438 and store the return address in ra.
-
-Opcode: 1101111 (for jal).
-
-Destination Register (rd): ra is x1 (binary: 00001).
-
-Immediate (imm[20|10:1|11|19:12]):
-
-Immediate 10438 in binary: 001010001001110 (split into fields):
-
-imm[20]: 0
-
-imm[10:1]: 0100010011
-
-imm[11]: 0
-
-imm[19:12]: 00101000
-
-**Encoding into Machine Code:**
-
-imm[20|10:1|11|19:12] | rd      | opcode -------> 0|0100010011|0|00101000| 00001  | 1101111
-
+### Instruction 4: `jal ra, 10438`  
+![Screenshot 2025-01-16 184953](https://github.com/user-attachments/assets/78558d34-6ddc-42cf-9de2-e81884d96629)  
+**Operation**: Jump to the address 10438 and store the return address in ra.  
+- **Opcode**: `1101111` (for `jal`).  
+- **Destination Register (rd)**: ra is x1 (binary: `00001`).  
+- **Immediate (imm[20|10:1|11|19:12])**: Immediate 10438 in binary: 001010001001110 (split into fields):  
+  - imm[20]: `0`  
+  - imm[10:1]: `0100010011`  
+  - imm[11]: `0`  
+  - imm[19:12]: `00101000`  
+**Encoding into Machine Code**:  
+imm[20|10:1|11|19:12] | rd      | opcode -------> 0|0100010011|0|00101000| 00001  | 1101111  
 - **Binary**: `0000000100100011000101110111`  
 - **Hexadecimal**: `0x370001e7`
 
 ---
+
 ### Instruction 5: `ret`  
-
-![Screenshot 2025-01-17 135951](https://github.com/user-attachments/assets/0be2f752-044f-4a0f-a480-f889f182a3fb)
-
+![Screenshot 2025-01-17 135951](https://github.com/user-attachments/assets/0be2f752-044f-4a0f-a480-f889f182a3fb)  
 **Operation**: Return to the calling function. This is equivalent to `jalr x0, ra, 0` in RISC-V assembly.  
 - **Opcode**: `1100111` (for `jalr`)  
 - **Source Register (rs1)**: `ra` → `x1` (binary: `00001`)  
 - **Destination Register (rd)**: `x0` → `x0` (binary: `00000`)  
 - **Immediate**: `0`  
-
-**Encoding into Machine Code:**
-
-imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000000     | 00001  | 000    | 00000  | 1100111
-
+**Encoding into Machine Code**:  
+imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000000     | 00001  | 000    | 00000  | 1100111  
 - **Binary**: `00000000000000010000000001110011`  
 - **Hexadecimal**: `0x00000067`
 
 ---
+
 ### Instruction 6: `bnez a5, offset`  
-
-![Screenshot 2025-01-17 130933](https://github.com/user-attachments/assets/56cd7a16-2dd8-4367-aeb7-e27033de646f)
-
+![Screenshot 2025-01-17 130933](https://github.com/user-attachments/assets/56cd7a16-2dd8-4367-aeb7-e27033de646f)  
 **Operation**: Branch to the specified offset if the value in register `a5` is not zero.  
 - **Opcode**: `1100011` (for `branch` instructions)  
 - **Source Register (rs1)**: `a5` → `x15` (binary: `01111`)  
 - **Function (funct3)**: `001` (for `bnez`, branch if not zero)  
-- **Immediate (offset)**: Branch target address relative to PC.
-
-**Encoding into Machine Code:**
-
-imm[12|10:5] | rs2   | rs1    | funct3 | imm[4:1|11] | opcode -----> 000000000000   | 01111  | 01111 | 001    | 00000   | 1100011
-
+- **Immediate (offset)**: Branch target address relative to PC.  
+**Encoding into Machine Code**:  
+imm[12|10:5] | rs2   | rs1    | funct3 | imm[4:1|11] | opcode -----> 000000000000   | 01111  | 01111 | 001    | 00000   | 1100011  
 - **Binary**: `000000000000011110001000000011`  
 - **Hexadecimal**: `0x000f0043`
 
 ---
 
 ### Instruction 7: `andi a5, a5, 1`  
-
-![Screenshot 2025-01-17 130917](https://github.com/user-attachments/assets/339ebf12-6cd5-4951-b800-06262c2af782)
-
-**Operation**: Performs a bitwise AND operation between the contents of register `a5` and the immediate value `1`, and stores the result back in `a5`.  
+![Screenshot 2025-01-17 130917](https://github.com/user-attachments/assets/339ebf12-6cd5-4951-b800-06262c2af782)  
+**Operation**: Performs a bitwise AND on register `a5` and the immediate value `1`, storing the result back in `a5`.  
 - **Opcode**: `0010011` (for immediate arithmetic operations like `andi`)  
 - **Function (funct3)**: `111` (for `andi`)  
-- **Source Register (rs1)**: `a5` → `x15` (binary: `01111`)  
-- **Destination Register (rd)**: `a5` → `x15` (binary: `01111`)  
-- **Immediate**: `1`  
+- **Immediate (imm[11:0])**: `1`  
+**Encoding into Machine Code**:  
+imm[11:0] | rs1   | funct3 | rd    | opcode ------> 000000000001   | 01111  | 111    | 01111  | 0010011  
+- **Binary**: `0000000000010111100010000110011`  
+- **Hexadecimal**: `0x001f0763`
 
-**Encoding into Machine Code:**
-
-imm[11:0] | rs1    | funct3 | rd    | opcode -----> 000000000001   | 01111  | 111    | 01111  | 0010011
-
-- **Binary**: `00000000000101111000111110010011`  
-- **Hexadecimal**: `0x001f7b13`
-
----
 ---
 
 ### Instruction 8: `lw a5, 12(sp)`  
@@ -345,3 +302,91 @@ funct7 | rs2    | rs1    | funct3 | rd    | opcode -----> 0000000   | 01010  | 0
 - **Hexadecimal**: `0x00050593`
 
 ---
+
+
+</details>
+
+<details>
+<summary>Task 4: Run Code and Verify Outputs</summary>
+
+# Task 4: RISCV Functional Simulation
+
+This task contains the Verilog code for a simple RISCV core (`megha_rv32i.v`) and its corresponding testbench (`megha_rv32i_tb.v`). The simulation is executed using Icarus Verilog, and the waveform output is visualized in GTKWave.
+
+## Task Objective
+
+We will simulate the RISCV core and analyze the output waveforms for different RISCV instructions that have been hardcoded in the Verilog code. The instructions are based on the reference RISCV ISA but differ in the instruction bit patterns.
+
+### Hardcoded Instructions:
+Below are the instructions used in the reference repository compared to the standard RISCV ISA bit patterns:
+
+![Instructions](https://github.com/user-attachments/assets/f1fc4e22-cbb4-44b8-aa57-e15a76f79145)
+
+
+###To to perform functional simulation of RISCV
+1. Create a new directory with your name mkdir <your_name>
+
+2. Create two files by using touch command as megha_rv32i.v and megha_rv32i_tb.v
+
+3. Copy the code from the reference github repo and paste it in your verilog and testbench files
+
+![Generation n adding of code](https://github.com/user-attachments/assets/53ca8a64-c7c5-439b-8651-da1144d007ec)
+
+![Compilation of code](https://github.com/user-attachments/assets/7d88c714-c416-4f61-b375-c61d4a915690)
+
+
+Following are the differences between standard RISCV ISA and the Instruction Set given in the reference repository:
+
+- **ADD R6, R2, R1**  
+  - Standard RISCV ISA: `32'h00110333`  
+  - Hardcoded ISA: `32'h02208300`
+  
+- **SUB R7, R1, R2**  
+  - Standard RISCV ISA: `32'h402083b3`  
+  - Hardcoded ISA: `32'h02209380`
+
+- **AND R8, R1, R3**  
+  - Standard RISCV ISA: `32'h0030f433`  
+  - Hardcoded ISA: `32'h0230a400`
+
+- **OR R9, R2, R5**  
+  - Standard RISCV ISA: `32'h005164b3`  
+  - Hardcoded ISA: `32'h02513480`
+
+- **XOR R10, R1, R4**  
+  - Standard RISCV ISA: `32'h0040c533`  
+  - Hardcoded ISA: `32'h0240c500`
+
+- **SLT R1, R2, R4**  
+  - Standard RISCV ISA: `32'h0045a0b3`  
+  - Hardcoded ISA: `32'h02415580`
+
+- **ADDI R12, R4, 5**  
+  - Standard RISCV ISA: `32'h004120b3`  
+  - Hardcoded ISA: `32'h00520600`
+
+- **BEQ R0, R0, 15**  
+  - Standard RISCV ISA: `32'h00000f63`  
+  - Hardcoded ISA: `32'h00f00002`
+
+- **BNE R0, R1, 20**  
+  - Standard RISCV ISA: `32'h00000163`  
+  - Hardcoded ISA: `32'h02005063`
+
+- **SLL R15, R1, R2**  
+  - Standard RISCV ISA: `32'h002097b3`  
+  - Hardcoded ISA: `32'h00208783`
+
+
+
+### Simulation Output
+
+![GTK simulation 1](https://github.com/user-attachments/assets/69f3f232-202a-4738-b1ba-71331cafbe79)
+
+![simulation 3](https://github.com/user-attachments/assets/83af30f4-6891-4fd7-9231-edfadc65fa37)
+
+
+</details>
+
+
+
