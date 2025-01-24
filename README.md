@@ -341,9 +341,14 @@ Following are the differences between standard RISCV ISA and the Instruction Set
   - Standard RISCV ISA: `32'h00110333`  
   - Hardcoded ISA: `32'h02208300`
   
+  ![ADD](https://github.com/user-attachments/assets/9351ac4d-832d-43fc-8f63-805ac7c8b04d)
+
 - **SUB R7, R1, R2**  
   - Standard RISCV ISA: `32'h402083b3`  
   - Hardcoded ISA: `32'h02209380`
+ 
+    ![SUB](https://github.com/user-attachments/assets/8d719c4f-a938-4550-bda9-bd4932c7337c)
+
 
 - **AND R8, R1, R3**  
   - Standard RISCV ISA: `32'h0030f433`  
