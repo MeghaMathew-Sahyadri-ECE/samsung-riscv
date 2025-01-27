@@ -353,34 +353,50 @@ Following are the differences between standard RISCV ISA and the Instruction Set
 - **AND R8, R1, R3**  
   - Standard RISCV ISA: `32'h0030f433`  
   - Hardcoded ISA: `32'h0230a400`
+ 
+![bitwise AND](https://github.com/user-attachments/assets/c9b0135f-36f0-4c3b-b45b-12f234be4e4a)
+
 
 - **OR R9, R2, R5**  
   - Standard RISCV ISA: `32'h005164b3`  
   - Hardcoded ISA: `32'h02513480`
+ 
+![Bitwise OR](https://github.com/user-attachments/assets/6db85b83-8411-4eea-a194-e9d4ddcfa092)
+
 
 - **XOR R10, R1, R4**  
   - Standard RISCV ISA: `32'h0040c533`  
   - Hardcoded ISA: `32'h0240c500`
+ 
+![BITWISE XOR](https://github.com/user-attachments/assets/1ef0bf3e-a550-4c3d-8d19-8ac4da60ccfe)
+
 
 - **SLT R1, R2, R4**  
   - Standard RISCV ISA: `32'h0045a0b3`  
   - Hardcoded ISA: `32'h02415580`
 
+![SLT operator](https://github.com/user-attachments/assets/118a62ab-b5ab-4530-a0b9-da1b58ab61c6)
+
+
 - **ADDI R12, R4, 5**  
   - Standard RISCV ISA: `32'h004120b3`  
   - Hardcoded ISA: `32'h00520600`
+ 
+![ADDI](https://github.com/user-attachments/assets/51f27d12-990d-4829-91b5-d53fde104d34)
+
 
 - **BEQ R0, R0, 15**  
   - Standard RISCV ISA: `32'h00000f63`  
   - Hardcoded ISA: `32'h00f00002`
+ 
+![BEQ](https://github.com/user-attachments/assets/69efa0bb-832d-4c29-b357-50d7133d8b9f)
+
 
 - **BNE R0, R1, 20**  
   - Standard RISCV ISA: `32'h00000163`  
   - Hardcoded ISA: `32'h02005063`
-
-- **SLL R15, R1, R2**  
-  - Standard RISCV ISA: `32'h002097b3`  
-  - Hardcoded ISA: `32'h00208783`
+ 
+![BNE](https://github.com/user-attachments/assets/d10a7fbb-ac7b-4e7f-b17a-89e207fb880a)
 
 
 
