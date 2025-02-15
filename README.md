@@ -470,11 +470,15 @@ This project involves implementing a **Simon Says game** using the **VSDSquadron
 | Button 2 | GPIOD Pin 2 | Input (Pull-Up) |
 | Button 3 | GPIOD Pin 3 | Input (Pull-Up) |
 | Button 4 | GPIOD Pin 4 | Input (Pull-Up) |
-| LED 1 | GPIOC Pin 5 | Output |
-| LED 2 | GPIOC Pin 6 | Output |
-| LED 3 | GPIOC Pin 7 | Output |
-| LED 4 | GPIOC Pin 8 | Output |
-| Buzzer | GPIOC Pin 9 | Output |
+| LED 1 | GPIOC Pin 1 | Output |
+| LED 2 | GPIOC Pin 2 | Output |
+| LED 3 | GPIOC Pin 3 | Output |
+| LED 4 | GPIOC Pin 4 | Output |
+| Buzzer | GPIOC Pin 5 | Output |
+
+## Circuit Diagram
+
+![Screenshot 2025-02-15 144616](https://github.com/user-attachments/assets/fbff8394-5062-484e-bfe6-f1bcef7f737c)
 
 ## Game Logic  
 1. **Generate a random LED sequence** (length: 4 steps initially).  
@@ -501,7 +505,7 @@ void GPIO_Config(void)
     GPIO_Init(GPIOD, &GPIO_InitStructure);
 
     // Configure LEDs and Buzzer as Output
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
     GPIO_Init(GPIOC, &GPIO_InitStructure);
@@ -523,9 +527,9 @@ void show_sequence()
 {
     for (int i = 0; i < SEQUENCE_LENGTH; i++)
     {
-        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 5)), SET);
+        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 1)), SET);
         Delay_Ms(500);
-        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 5)), RESET);
+        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 1)), RESET);
         Delay_Ms(250);
     }
 }
@@ -551,9 +555,9 @@ int check_player_input()
         int input = get_player_input();
 
         // Light up LED for feedback
-        GPIO_WriteBit(GPIOC, (1 << (input + 5)), SET);
+        GPIO_WriteBit(GPIOC, (1 << (input + 1)), SET);
         Delay_Ms(300);
-        GPIO_WriteBit(GPIOC, (1 << (input + 5)), RESET);
+        GPIO_WriteBit(GPIOC, (1 << (input + 1)), RESET);
         Delay_Ms(200);
 
         if (input != game_sequence[i])
@@ -571,9 +575,9 @@ void feedback_success()
 {
     for (int i = 0; i < 3; i++)
     {
-        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, SET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, SET);
         Delay_Ms(300);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, RESET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, RESET);
         Delay_Ms(300);
     }
 }
@@ -582,11 +586,11 @@ void feedback_failure()
 {
     for (int i = 0; i < 3; i++)
     {
-        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, SET);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_9, SET); // Activate Buzzer
+        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, SET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5, SET); // Activate Buzzer
         Delay_Ms(100);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, RESET);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_9, RESET); // Deactivate Buzzer
+        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, RESET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5, RESET); // Deactivate Buzzer
         Delay_Ms(100);
     }
 }
@@ -628,7 +632,6 @@ int main()
 
 ## Conclusion  
 This project demonstrates how the **VSDSquadron Mini RISC-V board** can be used to create an interactive **Simon Says** game using **GPIO input/output, random number generation, and digital logic**.  
-
 
 
 </details>
