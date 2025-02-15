@@ -23,13 +23,48 @@ Instructor: **Kunal Ghosh Sir**
 
 The task involved referring to C-based and RISC-V-based lab videos and executing the process of compiling C code using GCC and the RISC-V compiler.
 
+### C Based Lab
+![output 1](https://github.com/user-attachments/assets/0c3420bd-0d41-48e8-8831-8577e1479a93)
+
+![output 2](https://github.com/user-attachments/assets/113524fc-321d-4187-8299-47e57ba2ef7c)
+
+![sum 1 to n code](https://github.com/user-attachments/assets/eb2920ad-7b90-4135-8542-1eaad2e3f619)
+
+### RISC-V based lab
+![1](https://github.com/user-attachments/assets/01e4329e-e5cd-4e92-83e1-e93b3f57219d)
+
+![2](https://github.com/user-attachments/assets/4932e3a8-7fca-4b4b-804b-6a7625e22c7d)
+
+![3](https://github.com/user-attachments/assets/2ed4f378-2609-4638-86ae-11d19a0fc36e)
+
+![cat sum1ton c](https://github.com/user-attachments/assets/00b122a8-b1f4-4815-a81d-e2b0332974fa)
+
 </details>
 
 <details>
 <summary>Task 2: SPIKE Simulation</summary>
-
+  
 - Performing SPIKE simulation.
 - Debugging the C code in Interactive Debugging Mode using Spike.
+
+C Code :
+![C Code](https://github.com/user-attachments/assets/d425cf52-a7cc-4300-9929-9593d314a08a)
+
+o1 object dump:
+![o1 object dump](https://github.com/user-attachments/assets/8c3422b4-4d64-4637-86f9-99228504ca55)
+
+o1 terminal 1 :
+![o1 terminal 1](https://github.com/user-attachments/assets/fb5edd0e-c724-44e3-a7e1-c8366365b8b9)
+
+o1 terminal 2 :
+![o1 terminal 2](https://github.com/user-attachments/assets/5aa76eba-d4e2-41d0-a818-c5f468d2754a)
+
+ofast object dump :
+![ofast object dump](https://github.com/user-attachments/assets/6683f1be-8a55-4d8e-8c98-9d2fbe6350d8)
+
+ofast terminal :
+![ofast terminal](https://github.com/user-attachments/assets/4a2f8f44-aaba-4e2c-b35c-19b43641e2d7)
+
 
 </details>
 
@@ -409,5 +444,193 @@ Following are the differences between standard RISCV ISA and the Instruction Set
 
 </details>
 
+
+<details>
+<summary>Task 5:  Final Task of this internship is to implement any digital circuits using VSDSquadron Mini and check whether the building and uploading of C program file on RISCV processor works</summary>
+  
+# Simon Says Game using VSDSquadron Mini
+
+## Overview  
+This project involves implementing a **Simon Says game** using the **VSDSquadron Mini**, a **RISC-V-based SoC development kit**. The game enhances **memory skills** by challenging the player to repeat a randomly generated LED sequence. This project showcases how **GPIO input/output** can be used to create interactive embedded systems, utilizing **push buttons for input** and **LEDs for output**, with the **sequence logic programmed in C** using **PlatformIO IDE**.  
+
+## Components Required  
+- **VSDSquadron Mini** (RISC-V Development Board)  
+- **4 Push Buttons** (for user input)  
+- **4 LEDs** (to display sequences)  
+- **1 Buzzer** (for incorrect input feedback)  
+- **Breadboard**  
+- **Jumper Wires**  
+- **VS Code + PlatformIO IDE**  
+
+## Hardware Connections  
+
+| Component | GPIO Pin | Mode |
+|-----------|---------|------|
+| Button 1 | GPIOD Pin 1 | Input (Pull-Up) |
+| Button 2 | GPIOD Pin 2 | Input (Pull-Up) |
+| Button 3 | GPIOD Pin 3 | Input (Pull-Up) |
+| Button 4 | GPIOD Pin 4 | Input (Pull-Up) |
+| LED 1 | GPIOC Pin 5 | Output |
+| LED 2 | GPIOC Pin 6 | Output |
+| LED 3 | GPIOC Pin 7 | Output |
+| LED 4 | GPIOC Pin 8 | Output |
+| Buzzer | GPIOC Pin 9 | Output |
+
+## Game Logic  
+1. **Generate a random LED sequence** (length: 4 steps initially).  
+2. **Show the sequence to the player** by blinking LEDs.  
+3. **Player presses the buttons** to repeat the sequence.  
+4. **Game checks the input:**  
+   - If **correct**, the sequence **gets longer** in the next round.  
+   - If **wrong**, the buzzer sounds, LEDs flash to indicate failure, and the game **restarts**.  
+
+## How to Program?  
+
+### 1. Configure GPIO Pins  
+```c
+void GPIO_Config(void)
+{
+    GPIO_InitTypeDef GPIO_InitStructure = {0};
+    
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+
+    // Configure Buttons as Input (Pull-Up)
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
+    GPIO_Init(GPIOD, &GPIO_InitStructure);
+
+    // Configure LEDs and Buzzer as Output
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
+    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+    GPIO_Init(GPIOC, &GPIO_InitStructure);
+}
+```
+
+### 2. Generate & Display Sequence  
+```c
+void generate_sequence()
+{
+    srand(time(NULL)); // Seed random number generator
+    for (int i = 0; i < SEQUENCE_LENGTH; i++)
+    {
+        game_sequence[i] = rand() % 4;  // Random number 0-3
+    }
+}
+
+void show_sequence()
+{
+    for (int i = 0; i < SEQUENCE_LENGTH; i++)
+    {
+        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 5)), SET);
+        Delay_Ms(500);
+        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 5)), RESET);
+        Delay_Ms(250);
+    }
+}
+```
+
+### 3. Read Player Input & Validate  
+```c
+int get_player_input()
+{
+    while (1)
+    {
+        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1)) return 0;
+        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_2)) return 1;
+        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_3)) return 2;
+        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_4)) return 3;
+    }
+}
+
+int check_player_input()
+{
+    for (int i = 0; i < SEQUENCE_LENGTH; i++)
+    {
+        int input = get_player_input();
+
+        // Light up LED for feedback
+        GPIO_WriteBit(GPIOC, (1 << (input + 5)), SET);
+        Delay_Ms(300);
+        GPIO_WriteBit(GPIOC, (1 << (input + 5)), RESET);
+        Delay_Ms(200);
+
+        if (input != game_sequence[i])
+        {
+            return 0; // Incorrect
+        }
+    }
+    return 1; // Correct
+}
+```
+
+### 4. Success & Failure Feedback  
+```c
+void feedback_success()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, SET);
+        Delay_Ms(300);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, RESET);
+        Delay_Ms(300);
+    }
+}
+
+void feedback_failure()
+{
+    for (int i = 0; i < 3; i++)
+    {
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, SET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_9, SET); // Activate Buzzer
+        Delay_Ms(100);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8, RESET);
+        GPIO_WriteBit(GPIOC, GPIO_Pin_9, RESET); // Deactivate Buzzer
+        Delay_Ms(100);
+    }
+}
+```
+
+### 5. Main Function to Run Game  
+```c
+int main()
+{
+    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
+    SystemCoreClockUpdate();
+    Delay_Init();
+    GPIO_Config();
+
+    while (1)
+    {
+        generate_sequence();
+        show_sequence();
+
+        if (check_player_input())
+        {
+            feedback_success();  // Player passed
+        }
+        else
+        {
+            feedback_failure();  // Player failed
+        }
+
+        Delay_Ms(2000); // Pause before restarting
+    }
+}
+```
+
+## How to Run?  
+1. **Install VS Code & PlatformIO IDE**  
+2. **Set up PlatformIO environment**  
+3. **Connect VSDSquadron Mini via USB**  
+4. **Upload the Code using PlatformIO**  
+
+## Conclusion  
+This project demonstrates how the **VSDSquadron Mini RISC-V board** can be used to create an interactive **Simon Says** game using **GPIO input/output, random number generation, and digital logic**.  
+
+
+
+</details>
 
 
