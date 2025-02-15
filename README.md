@@ -446,7 +446,7 @@ Following are the differences between standard RISCV ISA and the Instruction Set
 
 
 <details>
-<summary>Task 5:  Final Task of this internship is to implement any digital circuits using VSDSquadron Mini and check whether the building and uploading of C program file on RISCV processor works</summary>
+<summary>Task 5:  To implement any circuits using VSDSquadron Mini and check whether the building and uploading of C program file on RISCV processor works</summary>
   
 # Simon Says Game using VSDSquadron Mini
 
