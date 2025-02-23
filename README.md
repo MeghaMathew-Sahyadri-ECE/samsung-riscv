@@ -618,6 +618,20 @@ void loop() {
 
 ## Conclusion  
 This project demonstrates how the **VSDSquadron Mini RISC-V board** can be used to create an interactive **Simon Says** game using **GPIO input/output, random number generation, and digital logic**.  
+</details>
+
+<details>
+<summary>Task 6:  Working video and Acknowledgement </summary>
+  
+## Working Video  
+
+[![Video Link](https://img.youtube.com/vi/dQw4w9WgXcQ/0.jpg)](https://github.com/user-attachments/assets/a09adc66-d2c5-4549-85ea-67329fff02d6)
+
+
+
+## Acknowledgement:
+
+   I sincerely thank **SAMSUNG, VSD**, and **Kunal Ghosh Sir** for the incredible opportunity to learn RISC-V architecture and VLSI design. This internship has significantly enhanced my technical knowledge and skills.
 
 
 </details>
