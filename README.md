@@ -466,162 +466,148 @@ This project involves implementing a **Simon Says game** using the **VSDSquadron
 
 | Component | GPIO Pin | Mode |
 |-----------|---------|------|
-| Button 1 | GPIOD Pin 1 | Input (Pull-Up) |
-| Button 2 | GPIOD Pin 2 | Input (Pull-Up) |
-| Button 3 | GPIOD Pin 3 | Input (Pull-Up) |
-| Button 4 | GPIOD Pin 4 | Input (Pull-Up) |
-| LED 1 | GPIOC Pin 1 | Output |
-| LED 2 | GPIOC Pin 2 | Output |
-| LED 3 | GPIOC Pin 3 | Output |
-| LED 4 | GPIOC Pin 4 | Output |
-| Buzzer | GPIOC Pin 5 | Output |
+| Button 1 | GPIO Pin D1 | Input (Pull-Up) |
+| Button 2 | GPIO Pin D2 | Input (Pull-Up) |
+| Button 3 | GPIO Pin D3 | Input (Pull-Up) |
+| Button 4 | GPIO Pin D4 | Input (Pull-Up) |
+| LED 1 | GPIO Pin C1 | Output |
+| LED 2 | GPIO Pin C2 | Output |
+| LED 3 | GPIO Pin C3 | Output |
+| LED 4 | GPIO Pin C4 | Output |
+| Buzzer | GPIO Pin C5 | Output |
 
 ## Circuit Diagram
 
-![Screenshot 2025-02-15 144616](https://github.com/user-attachments/assets/fbff8394-5062-484e-bfe6-f1bcef7f737c)
+![Circuit Diagram](https://github.com/user-attachments/assets/9959b135-208e-4afa-9c29-1f7e4575038f)
 
 ## Game Logic  
 1. **Generate a random LED sequence** (length: 4 steps initially).  
 2. **Show the sequence to the player** by blinking LEDs.  
 3. **Player presses the buttons** to repeat the sequence.  
 4. **Game checks the input:**  
-   - If **correct**, the sequence **gets longer** in the next round.  
+   - If **correct**, sequence **all LEDS GLOW** subtly.  
    - If **wrong**, the buzzer sounds, LEDs flash to indicate failure, and the game **restarts**.  
 
 ## How to Program?  
+  
+```cpp
+#include <Arduino.h>
 
-### 1. Configure GPIO Pins  
-```c
-void GPIO_Config(void)
-{
-    GPIO_InitTypeDef GPIO_InitStructure = {0};
-    
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+#define SEQUENCE_LENGTH 4  // Length of the game sequence
+#define BUZZER_PIN PC5      
 
-    // Configure Buttons as Input (Pull-Up)
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IPU;
-    GPIO_Init(GPIOD, &GPIO_InitStructure);
 
-    // Configure LEDs and Buzzer as Output
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5;
-    GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
-    GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOC, &GPIO_InitStructure);
-}
-```
+const int ledPins[] = {PC1, PC2, PC3, PC4};
 
-### 2. Generate & Display Sequence  
-```c
-void generate_sequence()
-{
-    srand(time(NULL)); // Seed random number generator
-    for (int i = 0; i < SEQUENCE_LENGTH; i++)
-    {
-        game_sequence[i] = rand() % 4;  // Random number 0-3
+const int buttonPins[] = {PD1, PD2, PD3, PD4};
+
+
+int game_sequence[SEQUENCE_LENGTH];
+
+// Function to generate a random sequence
+void generate_sequence() {
+    for (int i = 0; i < SEQUENCE_LENGTH; i++) {
+        game_sequence[i] = random(0, 4); 
     }
 }
 
-void show_sequence()
-{
-    for (int i = 0; i < SEQUENCE_LENGTH; i++)
-    {
-        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 1)), SET);
-        Delay_Ms(500);
-        GPIO_WriteBit(GPIOC, (1 << (game_sequence[i] + 1)), RESET);
-        Delay_Ms(250);
-    }
-}
-```
-
-### 3. Read Player Input & Validate  
-```c
-int get_player_input()
-{
-    while (1)
-    {
-        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_1)) return 0;
-        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_2)) return 1;
-        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_3)) return 2;
-        if (GPIO_ReadInputDataBit(GPIOD, GPIO_Pin_4)) return 3;
+// Function to display the sequence using LEDs
+void show_sequence() {
+    for (int i = 0; i < SEQUENCE_LENGTH; i++) {
+        digitalWrite(ledPins[game_sequence[i]], HIGH);
+        delay(500);
+        digitalWrite(ledPins[game_sequence[i]], LOW);
+        delay(250);
     }
 }
 
-int check_player_input()
-{
-    for (int i = 0; i < SEQUENCE_LENGTH; i++)
-    {
-        int input = get_player_input();
-
-        // Light up LED for feedback
-        GPIO_WriteBit(GPIOC, (1 << (input + 1)), SET);
-        Delay_Ms(300);
-        GPIO_WriteBit(GPIOC, (1 << (input + 1)), RESET);
-        Delay_Ms(200);
-
-        if (input != game_sequence[i])
-        {
-            return 0; // Incorrect
+// Function to get player's button press with debouncing
+int get_player_input() {
+    while (true) {
+        for (int i = 0; i < 4; i++) {
+            if (digitalRead(buttonPins[i]) == LOW) { 
+                delay(50); 
+                while (digitalRead(buttonPins[i]) == LOW); 
+                return i;
+            }
         }
     }
-    return 1; // Correct
 }
-```
 
-### 4. Success & Failure Feedback  
-```c
-void feedback_success()
-{
-    for (int i = 0; i < 3; i++)
-    {
-        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, SET);
-        Delay_Ms(300);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, RESET);
-        Delay_Ms(300);
+// Function for success feedback (All LEDs blink slowly)
+void feedback_success() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 4; j++) digitalWrite(ledPins[j], HIGH);
+        delay(300);
+        for (int j = 0; j < 4; j++) digitalWrite(ledPins[j], LOW);
+        delay(300);
     }
 }
 
-void feedback_failure()
-{
-    for (int i = 0; i < 3; i++)
-    {
-        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, SET);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_5, SET); // Activate Buzzer
-        Delay_Ms(100);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4, RESET);
-        GPIO_WriteBit(GPIOC, GPIO_Pin_5, RESET); // Deactivate Buzzer
-        Delay_Ms(100);
+// Function for failure feedback (All LEDs blink fast & buzzer rings)
+void feedback_failure() {
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 4; j++) digitalWrite(ledPins[j], HIGH);
+        digitalWrite(BUZZER_PIN, HIGH); // Turn buzzer ON
+        delay(100);
+        for (int j = 0; j < 4; j++) digitalWrite(ledPins[j], LOW);
+        digitalWrite(BUZZER_PIN, LOW);  // Turn buzzer OFF
+        delay(100);
     }
 }
-```
 
-### 5. Main Function to Run Game  
-```c
-int main()
-{
-    NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);
-    SystemCoreClockUpdate();
-    Delay_Init();
-    GPIO_Config();
+void setup() {
+    Serial.begin(115200);
+    randomSeed(analogRead(A0)); // Uses an unused analog pin for randomness
 
-    while (1)
-    {
-        generate_sequence();
-        show_sequence();
+    // Configure LED pins as Output
+    for (int i = 0; i < 4; i++) {
+        pinMode(ledPins[i], OUTPUT);
+        digitalWrite(ledPins[i], LOW);
+    }
 
-        if (check_player_input())
-        {
-            feedback_success();  // Player passed
+    // Configure Button pins as Input with Pull-Up
+    for (int i = 0; i < 4; i++) {
+        pinMode(buttonPins[i], INPUT_PULLUP);
+    }
+
+    // Configure Buzzer pin as Output
+    pinMode(BUZZER_PIN, OUTPUT);
+    digitalWrite(BUZZER_PIN, LOW);
+}
+
+void loop() {
+    generate_sequence();
+    show_sequence();
+
+    bool correct = true;
+
+    for (int i = 0; i < SEQUENCE_LENGTH; i++) {
+        int player_input = get_player_input();
+
+        // Light up the LED corresponding to the player's button press
+        digitalWrite(ledPins[player_input], HIGH);
+        delay(300);
+        digitalWrite(ledPins[player_input], LOW);
+        delay(200);
+
+        // Check if input matches the sequence
+        if (player_input != game_sequence[i]) {
+            correct = false;
+            break;
         }
-        else
-        {
-            feedback_failure();  // Player failed
-        }
-
-        Delay_Ms(2000); // Pause before restarting
     }
+
+    // Show feedback based on correctness
+    if (correct) {
+        feedback_success();
+    } else {
+        feedback_failure();
+    }
+
+    delay(2000); // Pause before restarting the game
 }
+
 ```
 
 ## How to Run?  
